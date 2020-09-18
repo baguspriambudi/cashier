@@ -8,12 +8,12 @@ const PORT = 5000;
 
 dotenv.config();
 
-const auth = require('./middlleware/auth');
 const schema = require('./middlleware/Schema');
 
 const user = require('./route/user_route');
 const login = require('./route/login_route');
 const member = require('./route/member_route');
+const product = require('./route/produk_route');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,6 +45,7 @@ router.post('/auth/user/create', schema.midRegister, user.createuser);
 router.post('/auth/user/login', schema.midRegister, login.login);
 router.post('/auth/member/create', schema.midMember, member.createMember);
 router.post('/auth/member/update', schema.midUpdateMember, member.updateMember);
+router.post('/auth/product/create', schema.midProduct, product.createProduct);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {

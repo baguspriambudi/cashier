@@ -39,3 +39,18 @@ exports.midUpdateMember = (req, res, next) => {
   }
   next();
 };
+
+exports.midProduct = (req, res, next) => {
+  const schema = Joi.object({
+    name: Joi.string().required(),
+    stock: Joi.number().required(),
+    price: Joi.number().required(),
+    diskon: Joi.number().required(),
+  }).options({ abortEarly: false });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return httpValidasiDataErrorRespone(res, error.details);
+  }
+  next();
+};
