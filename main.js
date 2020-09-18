@@ -8,6 +8,10 @@ const PORT = 5000;
 
 dotenv.config();
 
+const schema = require('./middlleware/Schema');
+
+const user = require('./route/user_route');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'));
@@ -32,7 +36,7 @@ app.get('/', (req, res) => {
 });
 
 const router = express.Router();
-
+router.post('/auth/create/user', schema.midRegister, user.createuser);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {
