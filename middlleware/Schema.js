@@ -26,3 +26,16 @@ exports.midMember = (req, res, next) => {
   }
   next();
 };
+
+exports.midUpdateMember = (req, res, next) => {
+  const schema = Joi.object({
+    memberId: Joi.string().required(),
+    expired: Joi.number().required(),
+  }).options({ abortEarly: false });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return httpValidasiDataErrorRespone(res, error.details);
+  }
+  next();
+};

@@ -34,13 +34,15 @@ app.get('/', (req, res) => {
   res.status(200).json({
     status: 200,
     message: 'system cashier service up and running',
+    environment: process.env.NODE_ENV,
+    timestamp: new Date(),
   });
 });
 
 const router = express.Router();
 router.post('/auth/user/create', schema.midRegister, user.createuser);
 router.post('/auth/member/create', schema.midMember, member.createMember);
-router.post('/auth/member/update', member.updateMember);
+router.post('/auth/member/update', schema.midUpdateMember, member.updateMember);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {
