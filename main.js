@@ -12,6 +12,7 @@ const auth = require('./middlleware/auth');
 const schema = require('./middlleware/Schema');
 
 const user = require('./route/user_route');
+const login = require('./route/login_route');
 const member = require('./route/member_route');
 
 app.use(express.json());
@@ -41,6 +42,7 @@ app.get('/', (req, res) => {
 
 const router = express.Router();
 router.post('/auth/user/create', schema.midRegister, user.createuser);
+router.post('/auth/user/login', schema.midRegister, login.login);
 router.post('/auth/member/create', schema.midMember, member.createMember);
 router.post('/auth/member/update', schema.midUpdateMember, member.updateMember);
 app.use('/api/v1', router);
