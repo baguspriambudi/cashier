@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 });
 
 const router = express.Router();
-router.post('/auth/create/user', schema.midRegister, user.createuser);
+router.post('/auth/user/create', schema.midRegister, user.createuser);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {
