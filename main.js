@@ -39,7 +39,8 @@ app.get('/', (req, res) => {
 
 const router = express.Router();
 router.post('/auth/user/create', schema.midRegister, user.createuser);
-router.post('/auth/member/create', auth.isAdmin, schema.midMember, member.createMember);
+router.post('/auth/member/create', schema.midMember, member.createMember);
+router.post('/auth/member/update', member.updateMember);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {
