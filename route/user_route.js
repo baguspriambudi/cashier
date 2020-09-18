@@ -8,7 +8,7 @@ exports.createuser = async (req, res, next) => {
     const finduser = await User.findOne({ username: username.toLowerCase() });
 
     if (finduser) {
-      httpValidasiErroResponse(res, 'username already exist');
+      return httpValidasiErroResponse(res, 'username already exist');
     }
     const passwordHash = bcrypt.hashSync(password, 10);
     const user = await new User({
