@@ -14,6 +14,7 @@ const user = require('./route/user_route');
 const login = require('./route/login_route');
 const member = require('./route/member_route');
 const product = require('./route/produk_route');
+const transaction = require('./route/transaction_route');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -47,6 +48,7 @@ router.post('/auth/member/create', schema.midMember, member.createMember);
 router.post('/auth/member/update', schema.midUpdateMember, member.updateMember);
 router.post('/auth/product/create', schema.midProduct, product.createProduct);
 router.post('/auth/product/update', product.updateProduct);
+router.post('/auth/transaction/update', transaction.createTransactions);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {
