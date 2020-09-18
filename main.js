@@ -17,7 +17,7 @@ const member = require('./route/member_route');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('combined'));
+if (process.env.NODE_ENV !== 'test') app.use(morgan('combined'));
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -62,3 +62,5 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(PORT, console.log(`listening to PORT ${PORT}`));
+
+module.exports = app;
