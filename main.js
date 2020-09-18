@@ -46,6 +46,7 @@ router.post('/auth/user/login', schema.midRegister, login.login);
 router.post('/auth/member/create', schema.midMember, member.createMember);
 router.post('/auth/member/update', schema.midUpdateMember, member.updateMember);
 router.post('/auth/product/create', schema.midProduct, product.createProduct);
+router.post('/auth/product/update', product.updateProduct);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {
