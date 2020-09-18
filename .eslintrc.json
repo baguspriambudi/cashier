@@ -8,7 +8,6 @@
         "endOfLine": "auto"
       }
     ],
-    "no-unused-vars": "warn",
     "no-console": "off",
     "func-names": "off",
     "no-process-exit": "off",
