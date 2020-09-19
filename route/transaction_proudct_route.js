@@ -1,6 +1,7 @@
 const Product = require('../model/Product');
 const TransactionProudcts = require('../model/TransactionProducts');
 const Transaction = require('../model/Transactions');
+const Member = require('../model/Member');
 const { httpAuthenticationFailed, httpNotFound } = require('../helper/http_respone');
 
 exports.createTransactions = async (req, res, next) => {
@@ -11,10 +12,16 @@ exports.createTransactions = async (req, res, next) => {
     const _idTransaction = generateIdTransaction._id;
     const productNotFoundIds = [];
     const productStockEmpty = [];
+    const dataTransaction = [];
 
+    // validasi member
+    const findmember = await Member.findOne({ memberId: transaction.member });
+    if (!findmember && transaction.member !== '') {
+      return httpNotFound(res, 'member not found');
+    }
     // valiadis find produk
     await Promise.all(
-      transaction.map(async (val) => {
+      transaction.products.map(async (val) => {
         const product = await Product.findById(val.product);
         if (!product) {
           productNotFoundIds.push(val.product);
@@ -30,25 +37,46 @@ exports.createTransactions = async (req, res, next) => {
       return httpAuthenticationFailed(res, `product ids ${productStockEmpty} empty`);
     }
 
-    let total = 0;
+    let price = 0;
+    let diskon = 0;
+    let diskonMember = 0;
+    let priceAfterDiskon = 0;
+    console.log(priceAfterDiskon);
     await Promise.all(
-      transaction.map(async (val) => {
+      transaction.products.map(async (val) => {
         const findProduct = await Product.findById({ _id: val.product });
-        await new TransactionProudcts({
+        const createTransaction = await new TransactionProudcts({
           product: val.product,
           transaction: _idTransaction,
           qty: val.qty,
           tgl: date,
           member: val.member,
           price: findProduct.price,
+          diskon: findProduct.diskon,
         }).save();
-        console.log(val.qty);
-        total += val.qty;
+        price += createTransaction.price * val.qty;
+        if (createTransaction && price >= 10000) {
+          diskon = findProduct.diskon * 100;
+          priceAfterDiskon = price - diskon;
+        }
+        if (createTransaction && findmember) {
+          diskonMember = price * 0.05;
+        }
+        if (createTransaction) {
+          await Product.updateOne({ _id: val.product }, { stock: findProduct.stock - val.qty });
+        }
+
+        if (createTransaction) {
+          dataTransaction.push(createTransaction);
+        }
       }),
     );
-    console.log(total);
+    const priceAfterDiskonAndMember = priceAfterDiskon - diskonMember;
+    console.log(priceAfterDiskon);
     res.status(200).json({
       msg: 'succes',
+      data: dataTransaction,
+      total: priceAfterDiskonAndMember,
     });
   } catch (error) {
     next(error);

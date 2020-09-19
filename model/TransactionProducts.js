@@ -5,9 +5,9 @@ const TransactionProductsSchema = mongoose.Schema({
   transaction: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Transaction' },
   qty: { type: Number, required: true },
   tgl: { type: Date },
-  member: { type: String },
+  member: { type: String, ref: 'Member' },
   price: { type: Number },
-  amount: { type: Number },
+  diskon: { type: Number },
 });
 
 module.exports = mongoose.model('TransactionProduct', TransactionProductsSchema);

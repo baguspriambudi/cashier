@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
 
-const transactionSchema = mongoose.Schema({}, { timestamp: true });
+const transactionSchema = mongoose.Schema({}, { timestamps: true });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
