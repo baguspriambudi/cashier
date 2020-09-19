@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
-const TransactionsSchema = mongoose.Schema({
-  product: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Product' },
-  qty: { type: Number, required: true },
-  tgl: { type: Date },
-  member: { type: String },
-  mount: { type: Number },
-});
+const transactionSchema = mongoose.Schema(
+  {
+    code: { type: String },
+  },
+  { timestamp: true },
+);
 
-module.exports = mongoose.model('Transactions', TransactionsSchema);
+module.exports = mongoose.model('Transaction', transactionSchema);

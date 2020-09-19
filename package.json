@@ -8,8 +8,12 @@
     "start": "node main.js",
     "dev": "nodemon main.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "precommit": "npm run lint"
+    "lint:fix": "eslint . --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
   "keywords": [],
   "author": "",

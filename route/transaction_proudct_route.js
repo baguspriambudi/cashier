@@ -1,5 +1,5 @@
 const Product = require('../model/Product');
-const Transaction = require('../model/Transactions');
+const TransactionProudcts = require('../model/TransactionProducts');
 const { httpAuthenticationFailed, httpNotFound } = require('../helper/http_respone');
 
 exports.createTransactions = async (req, res, next) => {
@@ -29,21 +29,25 @@ exports.createTransactions = async (req, res, next) => {
 
     let price = 0;
     const initialPrice = [];
-    const findPrice = await Promise.all(
+    await Promise.all(
       transaction.map(async (val) => {
         const findProduct = await Product.findById({ _id: val.product });
         initialPrice.push(findProduct.price);
         price += findProduct.price;
       }),
     );
+
+    initialPrice.forEach((item) => {
+      const A = item;
+      console.log(A);
+    });
     console.log(price);
-    console.log(initialPrice);
     let total = 0;
     await Promise.all(
       transaction.map(async (val) => {
         console.log(val.qty);
         total += val.qty;
-        const A = await new Transaction({ product: val.product, qty: val.qty, tgl: date, member: val.member });
+        const A = await new TransactionProudcts({ product: val.product, qty: val.qty, tgl: date, member: val.member });
         console.log(A);
       }),
     );
