@@ -212,68 +212,129 @@ describe('API Test', () => {
         throw error;
       }
     });
-  });
-  it('should return error member not found', async () => {
-    try {
-      // eslint-disable-next-line no-unused-vars
-      const admin = await chai
-        .request(server)
-        .post('/api/v1/auth/user/create')
-        .send({ username: 'wildan', password: '123123' });
-      const login = await chai
-        .request(server)
-        .post('/api/v1/auth/user/login')
-        .send({ username: 'wildan', password: '123123' });
-      const token = login.body.data;
-      await chai
-        .request(server)
-        .post('/api/v1/auth/member/update')
-        .set('Authorization', `Bearer ${token}`)
-        .send({ memberId: 'M-1611711', expired: 1 });
-      const res = await chai
-        .request(server)
-        .post('/api/v1/auth/member/update')
-        .set('Authorization', `Bearer ${token}`)
-        .send({ memberId: 'M-1655211', expired: 1 });
+    it('should return error member not found', async () => {
+      try {
+        // eslint-disable-next-line no-unused-vars
+        const admin = await chai
+          .request(server)
+          .post('/api/v1/auth/user/create')
+          .send({ username: 'wildan', password: '123123' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '123123' });
+        const token = login.body.data;
+        await chai
+          .request(server)
+          .post('/api/v1/auth/member/update')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ memberId: 'M-1611711', expired: 1 });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/member/update')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ memberId: 'M-1655211', expired: 1 });
 
-      expect(res.status).to.equal(404);
-      expect(res.body.status).to.equal(404);
-      expect(res.body.message).to.equal('user not found');
-    } catch (error) {
-      throw error;
-    }
+        expect(res.status).to.equal(404);
+        expect(res.body.status).to.equal(404);
+        expect(res.body.message).to.equal('user not found');
+      } catch (error) {
+        throw error;
+      }
+    });
+
+    it('should success update member', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '123123' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '123123' });
+        const token = login.body.data;
+        const member = await chai
+          .request(server)
+          .post('/api/v1/auth/member/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ name: 'suneo' });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/member/update')
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            memberId: member.body.data.memberId,
+            expired: 1,
+          });
+        expect(res.status).to.equal(200);
+        expect(res.body.status).to.equal(200);
+        expect(res.body.message).to.equal('update successfully');
+        expect(res.body).to.have.property('data');
+        expect(res.body.data.name).to.equal('suneo');
+        expect(res.body.data.diskon).to.equal(5);
+      } catch (error) {
+        throw error;
+      }
+    });
   });
-  it('should success update member', async () => {
-    try {
-      await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '123123' });
-      const login = await chai
-        .request(server)
-        .post('/api/v1/auth/user/login')
-        .send({ username: 'wildan', password: '123123' });
-      const token = login.body.data;
-      const member = await chai
-        .request(server)
-        .post('/api/v1/auth/member/create')
-        .set('Authorization', `Bearer ${token}`)
-        .send({ name: 'suneo' });
-      console.log(member.body);
-      const res = await chai
-        .request(server)
-        .post('/api/v1/auth/member/update')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          memberId: member.body.data.memberId,
-          expired: 1,
-        });
-      console.log(res.body);
-      expect(res.status).to.equal(200);
-      expect(res.body.status).to.equal(200);
-      expect(res.body.message).to.equal('update successfully');
-      expect(res.body).to.have.property('data');
-      expect(res.body.data.name).to.equal('suneo');
-      expect(res.body.data.diskon).to.equal(5);
-    } catch (error) {
-      throw error;
-    }
+  describe('POST /api/v1/auth/product/create', () => {
+    it('should return error validation token', async () => {
+      try {
+        const res = await chai.request(server).post('/api/v1/auth/product/create');
+        expect(res.status).to.equal(403);
+        expect(res.body.status).to.equal(403);
+        expect(res.body.message).to.equal('please provide token');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error validation schema', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '123123' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '123123' });
+        const token = login.body.data;
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/product/create')
+          .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).to.equal(400);
+        expect(res.body.status).to.equal(400);
+        expect(res.body.message).to.equal('Validation Error');
+        expect(res.body).to.have.property('error');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should succes create product', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '123123' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '123123' });
+        const token = login.body.data;
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            name: 'indomie',
+            stock: 50,
+            price: 2500,
+            diskon: 0,
+          });
+        expect(res.status).to.equal(200);
+        expect(res.body.status).to.equal(200);
+        expect(res.body.message).to.equal('data product successfully inputed');
+        expect(res.body.data.name).to.equal('indomie');
+        expect(res.body.data.stock).to.equal(50);
+        expect(res.body.data.price).to.equal(2500);
+        expect(res.body.data.diskon).to.equal(0);
+      } catch (error) {
+        throw error;
+      }
+    });
   });
 });
