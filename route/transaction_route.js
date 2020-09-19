@@ -28,22 +28,25 @@ exports.createTransactions = async (req, res, next) => {
     }
 
     let price = 0;
+    const initialPrice = [];
     const findPrice = await Promise.all(
       transaction.map(async (val) => {
         const findProduct = await Product.findById({ _id: val.product });
+        initialPrice.push(findProduct.price);
         price += findProduct.price;
       }),
     );
-    console.log(findPrice);
     console.log(price);
+    console.log(initialPrice);
     let total = 0;
-    const insertTransaction = await Promise.all(
+    await Promise.all(
       transaction.map(async (val) => {
+        console.log(val.qty);
         total += val.qty;
-        return new Transaction({ product: val.product, qty: val.qty, tgl: date, member: val.member });
+        const A = await new Transaction({ product: val.product, qty: val.qty, tgl: date, member: val.member });
+        console.log(A);
       }),
     );
-    console.log(insertTransaction);
     console.log(total);
     res.status(200).json({
       msg: 'succes',
