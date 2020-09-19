@@ -41,7 +41,6 @@ exports.createTransactions = async (req, res, next) => {
     let diskon = 0;
     let diskonMember = 0;
     let priceAfterDiskon = 0;
-    console.log(priceAfterDiskon);
     await Promise.all(
       transaction.products.map(async (val) => {
         const findProduct = await Product.findById({ _id: val.product });
@@ -55,23 +54,23 @@ exports.createTransactions = async (req, res, next) => {
           diskon: findProduct.diskon,
         }).save();
         price += createTransaction.price * val.qty;
-        if (createTransaction && price >= 10000) {
-          diskon = findProduct.diskon * 100;
-          priceAfterDiskon = price - diskon;
-        }
-        if (createTransaction && findmember) {
-          diskonMember = price * 0.05;
-        }
+        diskon += (findProduct.diskon / 100) * findProduct.price;
         if (createTransaction) {
           await Product.updateOne({ _id: val.product }, { stock: findProduct.stock - val.qty });
         }
-
         if (createTransaction) {
           dataTransaction.push(createTransaction);
         }
       }),
     );
+    if (price >= 10000) {
+      priceAfterDiskon = price - diskon;
+    }
+    if (findmember && price >= 10000) {
+      diskonMember = price * 0.05;
+    }
     const priceAfterDiskonAndMember = priceAfterDiskon - diskonMember;
+    console.log(price);
     console.log(priceAfterDiskon);
     res.status(200).json({
       msg: 'succes',
