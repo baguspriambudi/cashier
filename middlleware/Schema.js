@@ -54,3 +54,14 @@ exports.midProduct = (req, res, next) => {
   }
   next();
 };
+exports.midProductUpdate = (req, res, next) => {
+  const schema = Joi.object({
+    id: Joi.objectId().required(),
+  }).options({ abortEarly: false });
+
+  const { error } = schema.validate(req.query);
+  if (error) {
+    return httpValidasiDataErrorRespone(res, error.details);
+  }
+  next();
+};

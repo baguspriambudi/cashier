@@ -48,7 +48,7 @@ router.post('/auth/user/login', schema.midRegister, login.login);
 router.post('/auth/member/create', auth.isAdmin, schema.midMember, member.createMember);
 router.post('/auth/member/update', auth.isAdmin, schema.midUpdateMember, member.updateMember);
 router.post('/auth/product/create', auth.isAdmin, schema.midProduct, product.createProduct);
-router.post('/auth/product/update', auth.isAdmin, product.updateProduct);
+router.post('/auth/product/update', auth.isAdmin, schema.midProductUpdate, product.updateProduct);
 router.post('/auth/transaction_product/create', transactionProduct.createTransactions);
 app.use('/api/v1', router);
 
