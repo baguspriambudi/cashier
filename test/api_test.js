@@ -337,4 +337,92 @@ describe('API Test', () => {
       }
     });
   });
+  describe('POST api/v1/auth/product/update', () => {
+    it('should return error validation token', async () => {
+      try {
+        const res = await chai.request(server).post('/api/v1/auth/product/update');
+        expect(res.status).to.equal(403);
+        expect(res.body.status).to.equal(403);
+        expect(res.body.message).to.equal('please provide token');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error validation schema', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '1234' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '1234' });
+        const token = login.body.data;
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/product/update')
+          .set('Authorization', `Bearer ${token}`);
+        expect(res.status).to.equal(400);
+        expect(res.body.status).to.equal(400);
+        expect(res.body.message).to.equal('Validation Error');
+        expect(res.body).to.have.property('error');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error product not found', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '1234' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '1234' });
+        const token = login.body.data;
+        // eslint-disable-next-line no-unused-vars
+        const product = await chai
+          .request(server)
+          .post('/api/v1/auth/product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ name: 'roti', stock: 10, price: 1000, diskon: 0 });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/product/update')
+          .set('Authorization', `Bearer ${token}`)
+          .query({ id: '5f2331cb28aff031985c8c38' });
+        expect(res.status).to.equal(404);
+        expect(res.body.status).to.equal(404);
+        expect(res.body.message).to.equal('id product not found');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should success update', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '1234' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '1234' });
+        const token = login.body.data;
+        const product = await chai
+          .request(server)
+          .post('/api/v1/auth/product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ name: 'roti', stock: 10, price: 1000, diskon: 0 });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/product/update')
+          .set('Authorization', `Bearer ${token}`)
+          .query({ id: product.body.data._id })
+          .send({ name: 'bakpao', stock: 5, price: 2000, diskon: 0 });
+        expect(res.status).to.equal(200);
+        expect(res.body.status).to.equal(200);
+        expect(res.body.message).to.equal('update successfully');
+        expect(res.body.data.name).to.equal('bakpao');
+        expect(res.body.data.stock).to.equal(5);
+        expect(res.body.data.price).to.equal(2000);
+        expect(res.body.data.diskon).to.equal(0);
+      } catch (error) {
+        throw error;
+      }
+    });
+  });
 });
