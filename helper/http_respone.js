@@ -6,6 +6,15 @@ exports.httpOkResponse = (res, msg, data) => {
   });
 };
 
+exports.httpOkResponseTransaction = (res, msg, data, amount) => {
+  res.status(200).json({
+    status: 200,
+    message: msg,
+    data: data,
+    amount: amount,
+  });
+};
+
 // mengecek kebenaran data validasi
 exports.httpValidasiErroResponse = (res, msg) => {
   res.status(400).json({

@@ -2,7 +2,7 @@ const Product = require('../model/Product');
 const TransactionProudcts = require('../model/TransactionProducts');
 const Transaction = require('../model/Transactions');
 const Member = require('../model/Member');
-const { httpAuthenticationFailed, httpNotFound } = require('../helper/http_respone');
+const { httpAuthenticationFailed, httpNotFound, httpOkResponseTransaction } = require('../helper/http_respone');
 
 exports.createTransactions = async (req, res, next) => {
   try {
@@ -19,7 +19,12 @@ exports.createTransactions = async (req, res, next) => {
     if (!findmember && transaction.member !== '') {
       return httpNotFound(res, 'member not found');
     }
-    // valiadis find produk
+    // validasi expired member
+    const expired = date > findmember.expired;
+    if (expired === true) {
+      return httpAuthenticationFailed(res, 'member has been expired');
+    }
+    // validasi find produk
     await Promise.all(
       transaction.products.map(async (val) => {
         const product = await Product.findById(val.product);
@@ -40,7 +45,6 @@ exports.createTransactions = async (req, res, next) => {
     let price = 0;
     let diskon = 0;
     let diskonMember = 0;
-    let priceAfterDiskon = 0;
     await Promise.all(
       transaction.products.map(async (val) => {
         const findProduct = await Product.findById({ _id: val.product });
@@ -63,19 +67,26 @@ exports.createTransactions = async (req, res, next) => {
         }
       }),
     );
+    // validasi discount min 10000
     if (price >= 10000) {
-      priceAfterDiskon = price - diskon;
+      // eslint-disable-next-line no-self-assign
+      diskon = diskon;
     } else {
-      priceAfterDiskon = price;
+      diskon = 0;
     }
+    // validasi when customer has a member
     if (findmember && price >= 10000) {
       diskonMember = price * 0.05;
     }
-    const priceAfterDiskonAndMember = priceAfterDiskon - diskonMember;
-    res.status(200).json({
-      msg: 'succes',
-      data: dataTransaction,
-      total: priceAfterDiskonAndMember,
+    // validasi discount max 20000
+    let diskonMax = diskon + diskonMember;
+    if (diskonMax >= 20000) {
+      diskonMax = 20000;
+    }
+    const priceAfterDiskonAndMember = price - diskonMax;
+    httpOkResponseTransaction(res, 'succesfully create transaction', {
+      products: dataTransaction,
+      amount: priceAfterDiskonAndMember,
     });
   } catch (error) {
     next(error);
