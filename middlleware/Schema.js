@@ -65,3 +65,16 @@ exports.midProductUpdate = (req, res, next) => {
   }
   next();
 };
+exports.midTransactionProducts = (req, res, next) => {
+  const schema = Joi.object({
+    member: Joi.string(),
+    product: Joi.objectId().required(),
+    qty: Joi.number().required(),
+  }).options({ abortEarly: false });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return httpValidasiDataErrorRespone(res, error.details);
+  }
+  next();
+};

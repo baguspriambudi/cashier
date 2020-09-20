@@ -49,7 +49,12 @@ router.post('/auth/member/create', auth.isAdmin, schema.midMember, member.create
 router.post('/auth/member/update', auth.isAdmin, schema.midUpdateMember, member.updateMember);
 router.post('/auth/product/create', auth.isAdmin, schema.midProduct, product.createProduct);
 router.post('/auth/product/update', auth.isAdmin, schema.midProductUpdate, product.updateProduct);
-router.post('/auth/transaction_product/create', transactionProduct.createTransactions);
+router.post(
+  '/auth/transaction_product/create',
+  auth.isAdmin,
+  schema.midTransactionProducts,
+  transactionProduct.createTransactions,
+);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {
