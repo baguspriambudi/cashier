@@ -58,7 +58,7 @@ exports.createTransactions = async (req, res, next) => {
           diskon: findProduct.diskon,
         }).save();
         price += createTransaction.price * val.qty;
-        diskon += (findProduct.diskon / 100) * findProduct.price;
+        diskon += (findProduct.diskon / 100) * findProduct.price * val.qty;
         if (createTransaction) {
           await Product.updateOne({ _id: val.product }, { stock: findProduct.stock - val.qty });
         }

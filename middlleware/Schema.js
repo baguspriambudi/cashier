@@ -68,8 +68,7 @@ exports.midProductUpdate = (req, res, next) => {
 exports.midTransactionProducts = (req, res, next) => {
   const schema = Joi.object({
     member: Joi.string(),
-    product: Joi.objectId().required(),
-    qty: Joi.number().required(),
+    products: Joi.array().required().items(Joi.object()),
   }).options({ abortEarly: false });
 
   const { error } = schema.validate(req.body);

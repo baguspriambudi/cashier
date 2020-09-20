@@ -425,4 +425,178 @@ describe('API Test', () => {
       }
     });
   });
+  describe('POST api/v1/auth/transaction_product/create', () => {
+    it('should return error validation token', async () => {
+      try {
+        const res = await chai.request(server).post('/api/v1/auth/transaction_product/create');
+        expect(res.status).to.equal(403);
+        expect(res.body.status).to.equal(403);
+        expect(res.body.message).to.equal('please provide token');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error validation schema', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '1234' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '1234' });
+        const token = login.body.data;
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/transaction_product/create')
+          .set('Authorization', `Bearer ${token}`);
+        expect(res.status).to.equal(400);
+        expect(res.body.status).to.equal(400);
+        expect(res.body.message).to.equal('Validation Error');
+        expect(res.body).to.have.property('error');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error member not found', async () => {
+      try {
+        // eslint-disable-next-line no-unused-vars
+        const admin = await chai
+          .request(server)
+          .post('/api/v1/auth/user/create')
+          .send({ username: 'wildan', password: '123123' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '123123' });
+        const token = login.body.data;
+        await chai
+          .request(server)
+          .post('/api/v1/auth/member/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ memberId: 'M-1600543341734', expired: 1 });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/transaction_product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ member: 'M-1600543341733', products: [{ product: '5f6640394260651258d360f9', qty: '2' }] });
+
+        expect(res.status).to.equal(404);
+        expect(res.body.status).to.equal(404);
+        expect(res.body.message).to.equal('member not found');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error member expired', async () => {
+      try {
+        // eslint-disable-next-line no-unused-vars
+        const admin = await chai
+          .request(server)
+          .post('/api/v1/auth/user/create')
+          .send({ username: 'wildan', password: '123123' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '123123' });
+        const token = login.body.data;
+        await chai
+          .request(server)
+          .post('/api/v1/auth/member/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ memberId: 'M-1600543341734', expired: '2020-09-12' });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/transaction_product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ member: 'M-1600543341734', products: [{ product: '5f6640394260651258d360f9', qty: '2' }] });
+
+        expect(res.status).to.equal(404);
+        expect(res.body.status).to.equal(404);
+        expect(res.body.message).to.equal('member not found');
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error product not found', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '1234' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '1234' });
+        const token = login.body.data;
+        // eslint-disable-next-line no-unused-vars
+        const product = await chai
+          .request(server)
+          .post('/api/v1/auth/product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ name: 'roti', stock: 10, price: 1000, diskon: 0 });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/transaction_product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ member: 'M-1600543341734', products: [{ product: '5f6640394260651258d360f9', qty: '2' }] });
+        expect(res.status).to.equal(404);
+        expect(res.body.status).to.equal(404);
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should return error product empty', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '1234' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '1234' });
+        const token = login.body.data;
+        // eslint-disable-next-line no-unused-vars
+        const product = await chai
+          .request(server)
+          .post('/api/v1/auth/product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ _id: '5f6640394260651258d360f9', name: 'roti', stock: 0, price: 1000, diskon: 0 });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/transaction_product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ member: 'M-1600543341734', products: [{ product: '5f6640394260651258d360f9', qty: '2' }] });
+        expect(res.status).to.equal(404);
+        expect(res.body.status).to.equal(404);
+      } catch (error) {
+        throw error;
+      }
+    });
+    it('should succes transaction products create', async () => {
+      try {
+        await chai.request(server).post('/api/v1/auth/user/create').send({ username: 'wildan', password: '1234' });
+        const login = await chai
+          .request(server)
+          .post('/api/v1/auth/user/login')
+          .send({ username: 'wildan', password: '1234' });
+        const token = login.body.data;
+        const member = await chai
+          .request(server)
+          .post('/api/v1/auth/member/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ name: 'suneo' });
+        const product = await chai
+          .request(server)
+          .post('/api/v1/auth/product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ name: 'roti', stock: 10, price: 1000, diskon: 0 });
+        const res = await chai
+          .request(server)
+          .post('/api/v1/auth/transaction_product/create')
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            member: member.body.data.memberId,
+            products: [{ product: product.body.data._id, qty: '2' }],
+          });
+        expect(res.status).to.equal(200);
+        expect(res.body.status).to.equal(200);
+      } catch (error) {
+        throw error;
+      }
+    });
+  });
 });
