@@ -65,13 +65,13 @@ exports.createTransactions = async (req, res, next) => {
     );
     if (price >= 10000) {
       priceAfterDiskon = price - diskon;
+    } else {
+      priceAfterDiskon = price;
     }
     if (findmember && price >= 10000) {
       diskonMember = price * 0.05;
     }
     const priceAfterDiskonAndMember = priceAfterDiskon - diskonMember;
-    console.log(price);
-    console.log(priceAfterDiskon);
     res.status(200).json({
       msg: 'succes',
       data: dataTransaction,
