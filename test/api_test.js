@@ -447,7 +447,8 @@ describe('API Test', () => {
         const res = await chai
           .request(server)
           .post('/api/v1/auth/transaction_product/create')
-          .set('Authorization', `Bearer ${token}`);
+          .set('Authorization', `Bearer ${token}`)
+          .send({ member: '' });
         expect(res.status).to.equal(400);
         expect(res.body.status).to.equal(400);
         expect(res.body.message).to.equal('Validation Error');
