@@ -20,8 +20,7 @@ exports.createTransactions = async (req, res, next) => {
       return httpNotFound(res, 'member not found');
     }
     // validasi expired member
-    const expired = date > findmember.expired;
-    if (expired === true) {
+    if (transaction.member !== '' && date > findmember.expired) {
       return httpAuthenticationFailed(res, 'member has been expired');
     }
     // validasi find produk

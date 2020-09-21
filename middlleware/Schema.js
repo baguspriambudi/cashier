@@ -67,11 +67,13 @@ exports.midProductUpdate = (req, res, next) => {
 };
 exports.midTransactionProducts = (req, res, next) => {
   const schema = Joi.object({
-    member: Joi.string(),
-    products: Joi.array().items({
-      product: Joi.objectId().required(),
-      qty: Joi.number().required(),
-    }),
+    member: Joi.string().optional().allow(''),
+    products: Joi.array().items(
+      Joi.object({
+        product: Joi.objectId().required(),
+        qty: Joi.number().required(),
+      }),
+    ),
   }).options({ abortEarly: false });
 
   const { error } = schema.validate(req.body);
