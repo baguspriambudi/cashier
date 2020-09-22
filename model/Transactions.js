@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const datenow = new Date().setHours(0, 0, 0, 0);
-// console.log(datenow);
+console.log(datenow);
 
 const date = new Date(datenow);
 // return console.log(date);
