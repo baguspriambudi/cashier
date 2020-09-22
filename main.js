@@ -55,6 +55,7 @@ router.post(
   schema.midTransactionProducts,
   transactionProduct.createTransactions,
 );
+router.get('/auth/transaction_product/view', transactionProduct.viewTrxDate);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {

@@ -2,7 +2,12 @@ const Product = require('../model/Product');
 const TransactionProudcts = require('../model/TransactionProducts');
 const Transaction = require('../model/Transactions');
 const Member = require('../model/Member');
-const { httpAuthenticationFailed, httpNotFound, httpOkResponseTransaction } = require('../helper/http_respone');
+const {
+  httpAuthenticationFailed,
+  httpNotFound,
+  httpOkResponseTransaction,
+  httpOkResponse,
+} = require('../helper/http_respone');
 
 exports.createTransactions = async (req, res, next) => {
   try {
@@ -44,6 +49,7 @@ exports.createTransactions = async (req, res, next) => {
     let price = 0;
     let diskon = 0;
     let diskonMember = 0;
+    let afterdiscount = 0;
     await Promise.all(
       transaction.products.map(async (val) => {
         const findProduct = await Product.findById({ _id: val.product });
@@ -69,24 +75,43 @@ exports.createTransactions = async (req, res, next) => {
     // validasi discount min 10000
     if (price >= 10000) {
       // eslint-disable-next-line no-self-assign
-      diskon = diskon;
+      afterdiscount = price - diskon;
     } else {
-      diskon = 0;
+      afterdiscount = price;
     }
     // validasi when customer has a member
     if (findmember && price >= 10000) {
-      diskonMember = price * 0.05;
+      diskonMember = afterdiscount * 0.05;
     }
     // validasi discount max 20000
-    let diskonMax = diskon + diskonMember;
+    let diskonMax = diskonMember;
     if (diskonMax >= 20000) {
       diskonMax = 20000;
     }
-    const priceAfterDiskonAndMember = price - diskonMax;
+    console.log(diskonMember);
+    const priceAfterDiskonAndMember = afterdiscount - diskonMax;
     httpOkResponseTransaction(res, 'succesfully create transaction', {
       products: dataTransaction,
       amount: priceAfterDiskonAndMember,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.viewTrxDate = async (req, res, next) => {
+  try {
+    // eslint-disable-next-line no-unused-vars
+    const { start, end } = req.body;
+    const findtrx = await Transaction.find({
+      createdAt: {
+        // eslint-disable-next-line no-undef
+        // $gte: start,
+        $lt: start,
+      },
+    });
+    httpOkResponse(res, 'data founded', findtrx);
+    console.log(findtrx);
   } catch (error) {
     next(error);
   }
