@@ -55,7 +55,11 @@ router.post(
   schema.midTransactionProducts,
   transactionProduct.createTransactions,
 );
-router.get('/auth/transaction_product/view', transactionProduct.viewTrxDate);
+router.get(
+  '/auth/transaction_product/view',
+  schema.midProductViewTransactionbaseOnDate,
+  transactionProduct.viewTrxDate,
+);
 router.get(
   '/auth/transaction_product/view/transactions',
   auth.isAdmin,

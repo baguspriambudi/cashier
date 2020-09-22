@@ -103,15 +103,17 @@ exports.viewTrxDate = async (req, res, next) => {
   try {
     // eslint-disable-next-line no-unused-vars
     const { start, end } = req.body;
+    if (!start && !end) {
+      return httpOkResponse(res, 'data founded', await Transaction.find({}));
+    }
     const findtrx = await Transaction.find({
       createdAt: {
-        // eslint-disable-next-line no-undef
-        // $gte: start,
-        $lt: start,
+        $gte: start,
+        $lte: end,
       },
-    });
-    httpOkResponse(res, 'data founded', findtrx);
+    }).sort({ createdAt: 1 }); // mengurutkan dari tanggal paling kecil ke besar
     console.log(findtrx);
+    httpOkResponse(res, 'data founded', findtrx);
   } catch (error) {
     next(error);
   }

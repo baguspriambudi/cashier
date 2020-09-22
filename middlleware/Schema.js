@@ -96,3 +96,15 @@ exports.midProductViewTransactions = (req, res, next) => {
   }
   next();
 };
+
+exports.midProductViewTransactionbaseOnDate = (req, res, next) => {
+  const schema = Joi.object({
+    start: Joi.date().required().allow(''),
+    end: Joi.date().required().allow(''),
+  }).options({ abortEarly: false });
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return httpValidasiDataErrorRespone(res, error.details);
+  }
+  next();
+};
