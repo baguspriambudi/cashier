@@ -68,7 +68,7 @@ exports.midProductUpdate = (req, res, next) => {
 
 exports.midTransactionProducts = (req, res, next) => {
   const schema = Joi.object({
-    member: Joi.string().optional().allow(''),
+    member: Joi.string().required().allow(''),
     products: Joi.array()
       .required()
       .items(
