@@ -116,3 +116,16 @@ exports.viewTrxDate = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.viewtransactions = async (req, res, next) => {
+  try {
+    const { page } = req.query;
+    // eslint-disable-next-line radix
+    const int = parseInt(page);
+    const pageInt = int * 10 - 10;
+    const findtrx = await Transaction.find({}).skip(pageInt).limit(10);
+    httpOkResponse(res, 'data founded', { data: findtrx, count: findtrx.length });
+  } catch (error) {
+    next(error);
+  }
+};

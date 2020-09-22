@@ -84,3 +84,15 @@ exports.midTransactionProducts = (req, res, next) => {
   }
   next();
 };
+
+exports.midProductViewTransactions = (req, res, next) => {
+  const schema = Joi.object({
+    page: Joi.number().default(1),
+  }).options({ abortEarly: false });
+
+  const { error } = schema.validate(req.query);
+  if (error) {
+    return httpValidasiDataErrorRespone(res, error.details);
+  }
+  next();
+};
