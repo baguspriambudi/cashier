@@ -15,6 +15,6 @@ console.log(new Date(datenow));
 const opts = {
   timestamps: { currentTime: () => datenow },
 };
-const transactionSchema = mongoose.Schema({}, opts);
+const transactionSchema = mongoose.Schema({ amount: { type: Number } }, opts);
 
 module.exports = mongoose.model('Transaction', transactionSchema);
