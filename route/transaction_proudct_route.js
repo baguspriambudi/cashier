@@ -131,56 +131,24 @@ exports.viewtransactions = async (req, res, next) => {
     next(error);
   }
 };
-
 exports.viewtransactionsbyprice = async (req, res, next) => {
   try {
-    // const aq = [];
-    // const bq = [];
     const { start, end } = req.body;
-    const transactionByPrice = await Transaction.find({ amount: { $gte: start, $lte: end } })
+    const transaction = await Transaction.find({ amount: { $gte: start, $lte: end } })
       .sort({ amount: 1 })
-      .populate('Product');
-    const result = transactionByPrice.map((a) => a._id); // mengambil id di object array transactionByPrice
-    // console.log(result);
-    const product = await TransactionProudcts.find({
-      transaction: result,
-    });
-    // const trx = await Transaction.findOne({});
-
-    transactionByPrice.map(async (val) => {
-      const a = await Transaction.findById(val._id);
-      const productt = await TransactionProudcts.findOne({ transaction: a });
-      // console.log(a);
-      console.log(productt);
-    });
-    // const c = a.push(b);
-    // const newfind = transactionByPrice.join(aq);
-    // console.log(newfind);
-    // const newfindd = product.join(aq);
-    // const z = newfind.concat(newfindd);
-    // console.log(z);
-    // const products = product.map(async(val)=>{})
-    httpOkResponse(res, 'data founded', { transaction_by_price: transactionByPrice, data1: product });
-  } catch (error) {
-    next(error);
-  }
-};
-// iki tak nggo nyobo nyobo
-exports.view = async (req, res, next) => {
-  try {
-    const { start, end } = req.body;
-    const a = await Transaction.find({ amount: { $gte: start, $lte: end } }).sort({ amount: 1 });
-    // const result = a.map((d) => d._id);
-    // const z = [];
-    Promise.all(
-      a.map(async (val) => {
-        const c = await TransactionProudcts.find({ transaction: val._id });
-        a.product = c;
-        console.log(a);
+      .lean(); // untuk memodifikasi data array
+    await Promise.all(
+      transaction.map(async (val) => {
+        const c = await TransactionProudcts.find({ transaction: val._id }).populate({
+          path: 'product',
+          select: 'name',
+        });
+        // eslint-disable-next-line no-param-reassign
+        val.meta = { produk: c }; // membua key object baru
+        return val;
       }),
     );
-    httpOkResponse(res, 'cek', a);
-    // console.log(z);
+    httpOkResponse(res, 'data founded', transaction);
   } catch (error) {
     next(error);
   }
