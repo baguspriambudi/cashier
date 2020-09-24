@@ -69,6 +69,7 @@ router.get(
 router.get(
   '/auth/transaction_product/view/transactionsbyprice',
   auth.isAdmin,
+  schema.midProductViewTransactionsByPrice,
   transactionProduct.viewtransactionsbyprice,
 );
 app.use('/api/v1', router);
