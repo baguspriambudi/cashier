@@ -58,7 +58,7 @@ exports.createTransactions = async (req, res, next) => {
           transaction: _idTransaction,
           qty: val.qty,
           tgl: date,
-          member: val.member,
+          member: transaction.member,
           price: findProduct.price,
           diskon: findProduct.diskon,
         }).save();
@@ -88,7 +88,6 @@ exports.createTransactions = async (req, res, next) => {
     if (diskonMax >= 20000) {
       diskonMax = 20000;
     }
-    console.log(diskonMember);
     const priceAfterDiskonAndMember = afterdiscount - diskonMax;
     await Transaction.updateOne({ _id: _idTransaction }, { amount: priceAfterDiskonAndMember });
     httpOkResponseTransaction(res, 'succesfully create transaction', {
@@ -139,12 +138,12 @@ exports.viewtransactionsbyprice = async (req, res, next) => {
       .lean(); // untuk memodifikasi data array
     await Promise.all(
       transaction.map(async (val) => {
-        const c = await TransactionProudcts.find({ transaction: val._id }).populate({
+        const products = await TransactionProudcts.find({ transaction: val._id }).populate({
           path: 'product',
           select: 'name',
         });
         // eslint-disable-next-line no-param-reassign
-        val.meta = { produk: c }; // membua key object baru
+        val.meta = { produk: products }; // membua key object baru
         return val;
       }),
     );

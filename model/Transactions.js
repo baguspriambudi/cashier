@@ -11,7 +11,6 @@ const nowUtc = Date.UTC(
   date.getUTCSeconds(),
 );
 const datenow = new Date(nowUtc).setUTCHours(0, 0, 0, 0);
-console.log(new Date(datenow));
 const opts = {
   timestamps: { currentTime: () => datenow },
 };
