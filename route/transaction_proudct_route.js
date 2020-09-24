@@ -165,19 +165,21 @@ exports.viewtransactionsbyprice = async (req, res, next) => {
     next(error);
   }
 };
-
+// iki tak nggo nyobo nyobo
 exports.view = async (req, res, next) => {
   try {
     const { start, end } = req.body;
     const a = await Transaction.find({ amount: { $gte: start, $lte: end } }).sort({ amount: 1 });
     // const result = a.map((d) => d._id);
     // const z = [];
-    a.map(async (val) => {
-      const c = await TransactionProudcts.find({ transaction: val._id });
-      a.product = c;
-      console.log(a);
-    }),
-      httpOkResponse(res, 'cek', a);
+    Promise.all(
+      a.map(async (val) => {
+        const c = await TransactionProudcts.find({ transaction: val._id });
+        a.product = c;
+        console.log(a);
+      }),
+    );
+    httpOkResponse(res, 'cek', a);
     // console.log(z);
   } catch (error) {
     next(error);
