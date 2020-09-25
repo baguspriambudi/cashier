@@ -139,12 +139,12 @@ exports.viewtransactionsbyprice = async (req, res, next) => {
       .lean(); // untuk memodifikasi data array
     await Promise.all(
       transaction.map(async (val) => {
-        const c = await TransactionProudcts.find({ transaction: val._id }).populate({
+        const product = await TransactionProudcts.find({ transaction: val._id }).populate({
           path: 'product',
           select: 'name',
         });
         // eslint-disable-next-line no-param-reassign
-        val.meta = { produk: c }; // membua key object baru
+        val.product = product; // membua key object baru
         return val;
       }),
     );
