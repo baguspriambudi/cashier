@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 dotenv.config();
 
@@ -66,7 +66,12 @@ router.get(
   schema.midProductViewTransactions,
   transactionProduct.viewtransactions,
 );
-router.get('/auth/transaction_product/view/transactionsbyprice', transactionProduct.viewtransactionsbyprice);
+router.get(
+  '/auth/transaction_product/view/transactionsbyprice',
+  auth.isAdmin,
+  schema.midProductViewTransactionsByPrice,
+  transactionProduct.viewtransactionsbyprice,
+);
 app.use('/api/v1', router);
 
 app.use((req, res, next) => {

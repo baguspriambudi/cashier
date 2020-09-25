@@ -58,7 +58,7 @@ exports.createTransactions = async (req, res, next) => {
           transaction: _idTransaction,
           qty: val.qty,
           tgl: date,
-          member: val.member,
+          member: transaction.member,
           price: findProduct.price,
           diskon: findProduct.diskon,
         }).save();
@@ -88,7 +88,6 @@ exports.createTransactions = async (req, res, next) => {
     if (diskonMax >= 20000) {
       diskonMax = 20000;
     }
-    console.log(diskonMember);
     const priceAfterDiskonAndMember = afterdiscount - diskonMax;
     await Transaction.updateOne({ _id: _idTransaction }, { amount: priceAfterDiskonAndMember });
     httpOkResponseTransaction(res, 'succesfully create transaction', {
