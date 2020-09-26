@@ -62,8 +62,11 @@ exports.createTransactions = async (req, res, next) => {
           price: findProduct.price,
           diskon: findProduct.diskon,
         }).save();
+        // find total price
         price += createTransaction.price * val.qty;
+        // find total discount
         diskon += (findProduct.diskon / 100) * findProduct.price * val.qty;
+        // retrive data to display on respone
         if (createTransaction) {
           await Product.updateOne({ _id: val.product }, { stock: findProduct.stock - val.qty });
         }
@@ -72,6 +75,10 @@ exports.createTransactions = async (req, res, next) => {
         }
       }),
     );
+    // vlidasi discount max 20000
+    if (diskon >= 20000) {
+      diskon = 20000;
+    }
     // validasi discount min 10000
     if (price >= 10000) {
       // eslint-disable-next-line no-self-assign
@@ -80,7 +87,7 @@ exports.createTransactions = async (req, res, next) => {
       afterdiscount = price;
     }
     // validasi when customer has a member
-    if (findmember && price >= 10000) {
+    if (findmember && price >= 10000 && diskon < 20000) {
       diskonMember = afterdiscount * 0.05;
     }
     // validasi discount max 20000
@@ -142,6 +149,7 @@ exports.viewtransactionsbyprice = async (req, res, next) => {
           path: 'product',
           select: 'name',
         });
+        console.log(product);
         // eslint-disable-next-line no-param-reassign
         val.product = product; // membua key object baru
         return val;
