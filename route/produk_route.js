@@ -17,7 +17,7 @@ exports.createProduct = async (req, res, next) => {
     if (product) {
       await Product.findOneAndUpdate({ _id: product._id }, { qrcode: generate });
     }
-    httpOkResponse(res, 'data product successfully inputed', product);
+    httpOkResponse(res, 'data product successfully inputed', { product: product });
   } catch (error) {
     next(error);
   }
