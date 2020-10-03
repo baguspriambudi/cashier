@@ -328,10 +328,10 @@ describe('API Test', () => {
         expect(res.status).to.equal(200);
         expect(res.body.status).to.equal(200);
         expect(res.body.message).to.equal('data product successfully inputed');
-        expect(res.body.data.name).to.equal('indomie');
-        expect(res.body.data.stock).to.equal(50);
-        expect(res.body.data.price).to.equal(2500);
-        expect(res.body.data.diskon).to.equal(0);
+        expect(res.body.data.product.name).to.equal('indomie');
+        expect(res.body.data.product.stock).to.equal(50);
+        expect(res.body.data.product.price).to.equal(2500);
+        expect(res.body.data.product.diskon).to.equal(0);
       } catch (error) {
         throw error;
       }
@@ -411,7 +411,7 @@ describe('API Test', () => {
           .request(server)
           .post('/api/v1/auth/product/update')
           .set('Authorization', `Bearer ${token}`)
-          .query({ id: product.body.data._id })
+          .query({ id: product.body.data.product._id })
           .send({ name: 'bakpao', stock: 5, price: 2000, diskon: 0 });
         expect(res.status).to.equal(200);
         expect(res.body.status).to.equal(200);
@@ -591,7 +591,7 @@ describe('API Test', () => {
           .set('Authorization', `Bearer ${token}`)
           .send({
             member: member.body.data.memberId,
-            products: [{ product: product.body.data._id, qty: '2' }],
+            products: [{ product: product.body.data.product._id, qty: '2' }],
           });
         expect(res.status).to.equal(200);
         expect(res.body.status).to.equal(200);
