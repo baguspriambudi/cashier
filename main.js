@@ -56,7 +56,7 @@ router.post(
   transactionProduct.createTransactions,
 );
 router.get(
-  '/auth/transaction_product/view',
+  '/auth/transaction_product/view/transactions_by_date',
   schema.midProductViewTransactionbaseOnDate,
   transactionProduct.viewTrxDate,
 );
@@ -67,7 +67,7 @@ router.get(
   transactionProduct.viewtransactions,
 );
 router.get(
-  '/auth/transaction_product/view/transactionsbyprice',
+  '/auth/transaction_product/view/transactions_by_price',
   auth.isAdmin,
   schema.midProductViewTransactionsByPrice,
   transactionProduct.viewtransactionsbyprice,
