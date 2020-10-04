@@ -1,7 +1,7 @@
 # Service Cashier
 ## Introduction
 [Node.JS](https://nodejs.org/en/) | [Express](https://expressjs.com/) | [MongoDB](https://www.mongodb.com/)<br/>
-This is my repository built with Node JS, Framework Express and MongoDB, for cashier services
+This is my repository built with Node JS, Framework Express and MongoDB, for cashier services. In this service the admin can make a discount for certain products with a minimum discount and a maximum discount, the admin can also create a member for a customer for a certain period of time, a customer who has a member will get a 5% discount on the total purchase based on certain conditions
 #### What is Node.JS ?<br/>
 Node.js is a platform used for developing web-based applications. This platform uses JavaScript as its programming language which was designed by Ryan Dahl
 #### What is Express ?<br/>
