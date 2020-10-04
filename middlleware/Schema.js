@@ -99,8 +99,8 @@ exports.midProductViewTransactions = (req, res, next) => {
 
 exports.midProductViewTransactionbaseOnDate = (req, res, next) => {
   const schema = Joi.object({
-    start: Joi.date().required().allow(''),
-    end: Joi.date().required().allow(''),
+    start: Joi.date().required().optional(),
+    end: Joi.date().required().optional(),
   }).options({ abortEarly: false });
   const { error } = schema.validate(req.body);
   if (error) {

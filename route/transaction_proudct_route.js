@@ -110,16 +110,42 @@ exports.viewTrxDate = async (req, res, next) => {
   try {
     // eslint-disable-next-line no-unused-vars
     const { start, end } = req.body;
+    const transactions = await Transaction.find({}).sort({ createdAt: 1 }).lean();
+    await Promise.all(
+      transactions.map(async (val) => {
+        const product = await TransactionProudcts.find({ transaction: val._id }).populate({
+          path: 'product',
+          select: 'name',
+        });
+        // eslint-disable-next-line no-param-reassign
+        val.product = product;
+        return val;
+      }),
+    );
     if (!start && !end) {
-      return httpOkResponse(res, 'data founded', await Transaction.find({}));
+      return httpOkResponse(res, 'data founded', transactions);
     }
-    const findtrx = await Transaction.find({
+    const transactionsByDate = await Transaction.find({
       createdAt: {
         $gte: start,
         $lte: end,
       },
-    }).sort({ createdAt: 1 }); // mengurutkan dari tanggal paling kecil ke besar
-    httpOkResponse(res, 'data founded', findtrx);
+    })
+      .sort({ createdAt: 1 }) // mengurutkan dari tanggal paling kecil ke besar
+      .lean(); // manipulasi data object
+    // find transaction product
+    await Promise.all(
+      transactionsByDate.map(async (val) => {
+        const product = await TransactionProudcts.find({ transaction: val._id }).populate({
+          path: 'product',
+          select: 'name',
+        });
+        // eslint-disable-next-line no-param-reassign
+        val.product = product;
+        return val;
+      }),
+    );
+    httpOkResponse(res, 'data founded', transactionsByDate);
   } catch (error) {
     next(error);
   }
@@ -149,7 +175,6 @@ exports.viewtransactionsbyprice = async (req, res, next) => {
           path: 'product',
           select: 'name',
         });
-        console.log(product);
         // eslint-disable-next-line no-param-reassign
         val.product = product; // membua key object baru
         return val;
