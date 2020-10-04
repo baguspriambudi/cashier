@@ -14,8 +14,64 @@ express is a web framework used to create a RESTful API, the excellence of which
 MongoDB is a document-oriented database system that makes it easier to create table relational
 ## Requirements
 1. `npm` (node package manager)<br/>
-2. `npm i -s express` (from npm)
-3. `npm i -s mongoose` (from npm)
+2. `npm init -y` to create a package.json file to lock the library version used
+## Features
+1. Setup .prettierrc 
+```
+{
+  "semi": true,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 120,
+  "tabWidth": 2
+}
+```
+2. Setup .eslintrc.json and running eslint
+```
+{
+  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "no-console": "off",
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off",
+    "consistent-return": "off",
+    "no-underscore-dangle": "off"
+  }
+}
+```
+```
+"scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+```
+3. Create middleware using @hapi/joi `npm i -s @hapi/joi`
+4. Generate QR Code `npm i -s qrcode`
+5. Create unit testing using chai `npm i -D chai chai-http mocha` and run it using mocha `npm run test`
+```
+"scripts": {
+    "test": "mocha --timeout 10000 --exit"
+  },
+```
+6. Use husky `npm i -D husky` to run eslint before `commit` and run testing before `push`
+```
+ "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run test"
+    }
+  },
+```
+7. [Enabling GitHub integration and Automatic deploys](https://devcenter.heroku.com/articles/github-integration)
 ## How to run the app ?
 1. Clone or download first this repository with `https://github.com/baguspriambudi/cashier.git`<br/>
 2. Open the project in your favorite text editor<br/>
