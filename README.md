@@ -71,7 +71,7 @@ MongoDB is a document-oriented database system that makes it easier to create ta
     }
   },
 ```
-7. [Enabling GitHub integration and Automatic deploys](https://devcenter.heroku.com/articles/github-integration)
+7. [Enabling GitHub integration and automatic deploys](https://devcenter.heroku.com/articles/github-integration)
 ## How to run the app ?
 1. Clone or download first this repository with `https://github.com/baguspriambudi/cashier.git`<br/>
 2. Open the project in your favorite text editor<br/>
