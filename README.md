@@ -17,7 +17,7 @@ MongoDB is a document-oriented database system that makes it easier to create ta
 2. `npm init -y` to create a package.json file to lock the library version used
 ## Setting up Project
 1. Setup `.prettierrc` 
-2. Setup `.eslintrc.json` and running eslint  `"lint"    : "eslint ."`
+2. Setup `.eslintrc.json` and running eslint
 3. Setup environtment variable, rename `.env.example` to `.env`
 4. Use husky `npm i -D husky` to run eslint before `commit` and run testing before `push`
 5. [Enabling GitHub integration and automatic deploys](https://devcenter.heroku.com/articles/github-integration)
