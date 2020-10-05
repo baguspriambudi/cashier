@@ -16,27 +16,13 @@ MongoDB is a document-oriented database system that makes it easier to create ta
 1. `npm` (node package manager)<br/>
 2. `npm init -y` to create a package.json file to lock the library version used
 ## Setting up Project
-1. Setup .prettierrc 
-```
-{
-  "semi"          : true,
-  "trailingComma" : "all",
-  "singleQuote"   : true,
-  "printWidth"    : 120,
-  "tabWidth"      : 2
-}
-```
-2. Setup .eslintrc.json and running eslint
-```
-"scripts" : 
-  {
-    "lint"    : "eslint .",
-    "lint:fix": "eslint . --fix"
-  },
-```
+1. Setup `.prettierrc` 
+2. Setup `.eslintrc.json` and running eslint  `"lint"    : "eslint ."`
 3. Setup environtment variable, rename `.env.example` to `.env`
 4. Use husky `npm i -D husky` to run eslint before `commit` and run testing before `push`
 5. [Enabling GitHub integration and automatic deploys](https://devcenter.heroku.com/articles/github-integration)
+## Features
+1. Generate QR Code `npm i -s qrcode`
 ## How to run the app ?
 1. Clone or download first this repository with `https://github.com/baguspriambudi/cashier.git`<br/>
 2. Open the project in your favorite text editor<br/>
