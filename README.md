@@ -15,7 +15,7 @@ MongoDB is a document-oriented database system that makes it easier to create ta
 ## Requirements
 1. `npm` (node package manager)<br/>
 2. `npm init -y` to create a package.json file to lock the library version used
-## Features
+## Setting up Project
 1. Setup .prettierrc 
 ```
 {
@@ -28,55 +28,15 @@ MongoDB is a document-oriented database system that makes it easier to create ta
 ```
 2. Setup .eslintrc.json and running eslint
 ```
-{
-  "extends" : ["airbnb", "prettier", "plugin:node/recommended"],
-  "plugins" : ["prettier"],
-  "rules"   : {
-                "prettier/prettier": 
-                  [
-                      "error",
-                    {
-                      "endOfLine": "auto"
-                    }
-                  ],
-    "no-console"              : "off",
-    "func-names"              : "off",
-    "no-process-exit"         : "off",
-    "object-shorthand"        : "off",
-    "class-methods-use-this"  : "off",
-    "consistent-return"       : "off",
-    "no-underscore-dangle"    : "off"
-  }
-}
-```
-```
 "scripts" : 
   {
     "lint"    : "eslint .",
     "lint:fix": "eslint . --fix"
   },
 ```
-3. Create middleware using @hapi/joi `npm i -s @hapi/joi`
-4. Generate QR Code `npm i -s qrcode`
-5. Create unit testing using chai `npm i -D chai chai-http mocha` and run it using mocha `npm run test`
-```
-"scripts" : 
-  {
-    "test" : "mocha --timeout 10000 --exit"
-  },
-```
-6. Use husky `npm i -D husky` to run eslint before `commit` and run testing before `push`
-```
- "husky": 
- {
-    "hooks": 
-    {
-      "pre-commit": "npm run lint",
-      "pre-push"  : "npm run test"
-    }
- },
-```
-7. [Enabling GitHub integration and automatic deploys](https://devcenter.heroku.com/articles/github-integration)
+3. Setup environtment variable, rename `.env.example` to `.env`
+4. Use husky `npm i -D husky` to run eslint before `commit` and run testing before `push`
+5. [Enabling GitHub integration and automatic deploys](https://devcenter.heroku.com/articles/github-integration)
 ## How to run the app ?
 1. Clone or download first this repository with `https://github.com/baguspriambudi/cashier.git`<br/>
 2. Open the project in your favorite text editor<br/>
@@ -134,14 +94,7 @@ MongoDB is a document-oriented database system that makes it easier to create ta
               }
 }
 ```
-2. View transactions by price ranges `GET`<br/>
-- Body/urlencoded :
-```
-{
-  start : 10000,
-  end : 20000
-}
-```
+2. View transactions `GET`<br/>
 - Result :
 ```
 {
@@ -190,53 +143,4 @@ MongoDB is a document-oriented database system that makes it easier to create ta
             ]
 }           
 
-```
-3. View transactions by date `GET`<br/>
-- Body/urlencoded :
-```
-{
-  start : '2020-10-02',
-  end   : '2020-10-04'
-}
-```
-4. Create user `POST`<br/>
-- Body/urlencoded :
-```
-}
-  username : 'admin',
-  password : 'admin'
-}
-```
-- Result :
-```
-{
-    "status"  : 200,
-    "message" : "Data succesfully inputed",
-    "data"    : {
-                  "role"    : "admin",
-                  "_id"     : "5f797e9918abfd0017865047",
-                  "username": "admin",
-                  "password": "$2b$10$uhtEJlKS663SBJ.KUjwROutS7AKV6wUirrnjAGX5QA1BFM69AbsMC",
-                  "__v"     : 0
-                }
-}
-```
-5. Login `POST`<br/>
-- Body/urlencoded :
-```
-}
-  username : 'admin',
-  password : 'admin'
-}
-```
-- Result :
-```
-{
-    "status"  : 200,
-    "message" : "succes login",
-    "data"    : {
-                  "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Zjc5N2U5OTE4YWJmZDAwMTc4NjUwNDciLCJyb2xlIjoiY
-                             WRtaW4iLCJpYXQiOjE2MDE3OTc5OTMsImV4cCI6MTYwMTg4NDM5M30.LbtFasFFehNy5OYkb54nUCioYsxG_P33nOfVxmWndCU"
-                }
-}
 ```
