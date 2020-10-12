@@ -1,22 +1,10 @@
-const bcrypt = require('bcrypt');
-const User = require('../model/User');
-const { httpValidasiErroResponse, httpOkResponse } = require('../helper/http_respone');
+const express = require('express');
 
-exports.createuser = async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const finduser = await User.findOne({ username: username.toLowerCase() });
+const router = express.Router();
 
-    if (finduser) {
-      return httpValidasiErroResponse(res, 'username already exist');
-    }
-    const passwordHash = bcrypt.hashSync(password, 10);
-    const user = await new User({
-      username: username,
-      password: passwordHash,
-    }).save();
-    httpOkResponse(res, 'Data succesfully inputed', user);
-  } catch (error) {
-    next(error);
-  }
-};
+const auth = require('../middlleware/auth');
+const userController = require('../controller/user');
+
+router.post('/create', auth.isAdmin, userController.createuser);
+
+module.exports = router;
