@@ -8,12 +8,12 @@ const PORT = process.env.PORT || 5000;
 
 dotenv.config();
 
-const schema = require('./middlleware/Schema');
-const auth = require('./middlleware/auth');
+// const schema = require('./middlleware/Schema');
+// const auth = require('./middlleware/auth');
 
-const member = require('./route/member_route');
-const product = require('./route/produk_route');
-const transactionProduct = require('./route/transaction_proudct_route');
+// const member = require('./route/member_route');
+// const product = require('./route/produk_route');
+// const transactionProduct = require('./route/transaction_proudct_route');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,36 +41,37 @@ app.get('/', (req, res) => {
 });
 
 const routeApiV1 = express.Router();
-const router = express.Router();
-router.post('/auth/member/create', auth.isAdmin, schema.midMember, member.createMember);
-router.post('/auth/member/update', auth.isAdmin, schema.midUpdateMember, member.updateMember);
-router.post('/auth/product/create', auth.isAdmin, schema.midProduct, product.createProduct);
-router.post('/auth/product/update', auth.isAdmin, schema.midProductUpdate, product.updateProduct);
-router.post(
-  '/auth/transaction_product/create',
-  auth.isAdmin,
-  schema.midTransactionProducts,
-  transactionProduct.createTransactions,
-);
-router.get(
-  '/auth/transaction_product/view/transactions_by_date',
-  schema.midProductViewTransactionbaseOnDate,
-  transactionProduct.viewTrxDate,
-);
-router.get(
-  '/auth/transaction_product/view/transactions',
-  auth.isAdmin,
-  schema.midProductViewTransactions,
-  transactionProduct.viewtransactions,
-);
-router.get(
-  '/auth/transaction_product/view/transactions_by_price',
-  auth.isAdmin,
-  schema.midProductViewTransactionsByPrice,
-  transactionProduct.viewtransactionsbyprice,
-);
+// const router = express.Router();
+// // router.post('/auth/member/create', auth.isAdmin, schema.midMember, member.createMember);
+// router.post('/auth/member/update', auth.isAdmin, schema.midUpdateMember, member.updateMember);
+// router.post('/auth/product/create', auth.isAdmin, schema.midProduct, product.createProduct);
+// router.post('/auth/product/update', auth.isAdmin, schema.midProductUpdate, product.updateProduct);
+// router.post(
+//   '/auth/transaction_product/create',
+//   auth.isAdmin,
+//   schema.midTransactionProducts,
+//   transactionProduct.createTransactions,
+// );
+// router.get(
+//   '/auth/transaction_product/view/transactions_by_date',
+//   schema.midProductViewTransactionbaseOnDate,
+//   transactionProduct.viewTrxDate,
+// );
+// router.get(
+//   '/auth/transaction_product/view/transactions',
+//   auth.isAdmin,
+//   schema.midProductViewTransactions,
+//   transactionProduct.viewtransactions,
+// );
+// router.get(
+//   '/auth/transaction_product/view/transactions_by_price',
+//   auth.isAdmin,
+//   schema.midProductViewTransactionsByPrice,
+//   transactionProduct.viewtransactionsbyprice,
+// );
 
 routeApiV1.use('/auth/user', require('./route/user_route'));
+routeApiV1.use('/auth/member', require('./route/member_route'));
 
 app.use('/api/v1', routeApiV1);
 
