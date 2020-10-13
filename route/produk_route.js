@@ -1,37 +1,12 @@
-const Qrcode = require('qrcode');
-const mongoose = require('mongoose');
-const Product = require('../model/Product');
-const { httpOkResponse, httpNotFound } = require('../helper/http_respone');
+const express = require('express');
 
-exports.createProduct = async (req, res, next) => {
-  try {
-    const { name, stock, price, diskon } = req.body;
-    const product = await new Product({
-      name: name,
-      stock: stock,
-      price: price,
-      diskon: diskon,
-    }).save();
-    const parseStr = mongoose.Types.ObjectId(product._id).toHexString();
-    const generate = await Qrcode.toDataURL(parseStr);
-    if (product) {
-      await Product.findOneAndUpdate({ _id: product._id }, { qrcode: generate });
-    }
-    httpOkResponse(res, 'data product successfully inputed', { product: product });
-  } catch (error) {
-    next(error);
-  }
-};
+const router = express.Router();
 
-exports.updateProduct = async (req, res, next) => {
-  try {
-    const Id = await Product.findById({ _id: req.query.id });
-    if (!Id) {
-      return httpNotFound(res, 'id product not found');
-    }
-    const product = await Product.findOneAndUpdate({ _id: req.query.id }, req.body, { new: true });
-    httpOkResponse(res, 'update successfully', product);
-  } catch (error) {
-    next(error);
-  }
-};
+const auth = require('../middlleware/auth');
+const schema = require('../middlleware/Schema');
+const productController = require('../controller/product');
+
+router.post('/create', auth.isAdmin, schema.midProduct, productController.createProduct);
+router.post('/update', auth.isAdmin, schema.midProductUpdate, productController.updateProduct);
+
+module.exports = router;

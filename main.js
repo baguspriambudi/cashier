@@ -8,9 +8,6 @@ const PORT = process.env.PORT || 5000;
 
 dotenv.config();
 
-// const schema = require('./middlleware/Schema');
-// const auth = require('./middlleware/auth');
-
 // const member = require('./route/member_route');
 // const product = require('./route/produk_route');
 // const transactionProduct = require('./route/transaction_proudct_route');
@@ -72,6 +69,7 @@ const routeApiV1 = express.Router();
 
 routeApiV1.use('/auth/user', require('./route/user_route'));
 routeApiV1.use('/auth/member', require('./route/member_route'));
+routeApiV1.use('/auth/product', require('./route/produk_route'));
 
 app.use('/api/v1', routeApiV1);
 
