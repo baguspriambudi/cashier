@@ -70,6 +70,7 @@ const routeApiV1 = express.Router();
 routeApiV1.use('/auth/user', require('./route/user_route'));
 routeApiV1.use('/auth/member', require('./route/member_route'));
 routeApiV1.use('/auth/product', require('./route/produk_route'));
+routeApiV1.use('/auth/transaction_product', require('./route/transaction_proudct_route'));
 
 app.use('/api/v1', routeApiV1);
 
