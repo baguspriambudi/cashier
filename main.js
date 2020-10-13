@@ -11,8 +11,6 @@ dotenv.config();
 const schema = require('./middlleware/Schema');
 const auth = require('./middlleware/auth');
 
-// const user = require('./route/user_route');
-const login = require('./route/login_route');
 const member = require('./route/member_route');
 const product = require('./route/produk_route');
 const transactionProduct = require('./route/transaction_proudct_route');
@@ -44,8 +42,6 @@ app.get('/', (req, res) => {
 
 const routeApiV1 = express.Router();
 const router = express.Router();
-// router.post('/auth/user/create', schema.midRegister, user.createuser);
-router.post('/auth/user/login', schema.midRegister, login.login);
 router.post('/auth/member/create', auth.isAdmin, schema.midMember, member.createMember);
 router.post('/auth/member/update', auth.isAdmin, schema.midUpdateMember, member.updateMember);
 router.post('/auth/product/create', auth.isAdmin, schema.midProduct, product.createProduct);
@@ -74,10 +70,8 @@ router.get(
   transactionProduct.viewtransactionsbyprice,
 );
 
-// eslint-disable-next-line no-undef
 routeApiV1.use('/auth/user', require('./route/user_route'));
 
-// eslint-disable-next-line no-undef
 app.use('/api/v1', routeApiV1);
 
 app.use((req, res, next) => {
